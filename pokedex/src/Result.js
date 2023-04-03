@@ -19,7 +19,7 @@ function Pokemon({ pokemon }) {
   );
 }
 
-function Result({ selectedTypes }) {
+function Result({ selectedTypes, searchName }) {
   const [pokemons, setPokemons] = useState([]);
 
   useEffect(() => {
@@ -35,14 +35,23 @@ function Result({ selectedTypes }) {
   return (
     <div className='grid'>
       {pokemons.map((pokemon) => {
-        // if no types are selected, display all pokemon
-        if (selectedTypes.length === 0) {
+        const nameMatch = pokemon.name.english
+          .toLowerCase()
+          .includes(searchName.toLowerCase());
+
+        // If no types are selected and the name matches, display the Pokémon
+        if (selectedTypes.length === 0 && nameMatch) {
           return <Pokemon pokemon={pokemon} />;
         }
-        // if a type is selected, display only pokemon that match the type
-        if (selectedTypes.every((type) => pokemon.type.includes(type))) {
+
+        // If a type is selected and the name matches, display the Pokémon
+        if (
+          selectedTypes.every((type) => pokemon.type.includes(type)) &&
+          nameMatch
+        ) {
           return <Pokemon pokemon={pokemon} />;
         }
+
         return null;
       })}
     </div>

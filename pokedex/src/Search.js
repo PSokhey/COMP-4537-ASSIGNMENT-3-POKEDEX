@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 
 // searcg function takes in the selectedTypes state and the setSelectedTypes function as props, defines how it is used. 
-function Search({ selectedTypes, setSelectedTypes }) {
+function Search({ selectedTypes, setSelectedTypes, setSearchName }) {
   const [types, setTypes] = useState([])
 
   // called once when component is mounted to get all the english types. 
@@ -29,10 +29,23 @@ function Search({ selectedTypes, setSelectedTypes }) {
       setSelectedTypes(selectedTypes.filter(type => type !== value))
     }
   }
+
+  // handle name change.
+  const handleNameChange = (e) => {
+    setSearchName(e.target.value)
+  };
   
   // returns a list of checkboxes for each type and how to display them. 
   return (
     <div>
+      <div>
+        <label htmlFor="searchName">Name:</label>
+        <input
+          type="text"
+          id="searchName"
+          onChange={handleNameChange}
+        />
+      </div>
       {
         types.map(type => <div key={type}>
           <input

@@ -35,7 +35,8 @@ function Search({ selectedTypes, setSelectedTypes, setSearchName }) {
     setSearchName(e.target.value)
   };
   
-  // returns a list of checkboxes for each type and how to display them. 
+  // returns a list of checkboxes for each type and how to display them.
+  // returns a text input for the name search. 
   return (
     <div>
       <div>

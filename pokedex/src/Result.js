@@ -6,28 +6,34 @@ import './style.css';
 // show more details of the pokemon when clicked.
 function PokemonDetails({ pokemon, onClose }) {
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h1>{pokemon.name.english}</h1>
+    <>
+    <div className="modal-background" onClick={onClose}></div>
+    <div className="pokemon-card" id="pokemonCard">
+      <div className="pokemon-card-image">
         <img
           src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${pokemon.id
             .toString()
             .padStart(3, '0')}.png`}
           alt={pokemon.name.english}
+          id="pokemonImage"
         />
+      </div>
+      <div className="pokemon-card-info">
+        <h2 id="pokemonName">{pokemon.name.english}</h2>
         <ul>
+          {pokemon.type.map((type) => (
+            <li key={type}>Type: {type}</li>
+          ))}
           {Object.entries(pokemon.base).map(([stat, value]) => (
             <li key={stat}>
               {stat}: {value}
             </li>
           ))}
-          {pokemon.type.map((type) => (
-            <li key={type}>{type}</li>
-          ))}
         </ul>
         <button onClick={onClose}>Close</button>
       </div>
     </div>
+    </>
   );
 }
 

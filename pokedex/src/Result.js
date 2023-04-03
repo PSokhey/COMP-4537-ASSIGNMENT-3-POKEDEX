@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+// import custom styling.
+import './style.css';
+
 function Pokemon({ pokemon }) {
   return (
     <div className='pokemonObject' key={pokemon.id}>
@@ -30,7 +33,7 @@ function Result({ selectedTypes }) {
   }, []);
 
   return (
-    <div>
+    <div className='grid'>
       {pokemons.map((pokemon) => {
         // if no types are selected, display all pokemon
         if (selectedTypes.length === 0) {

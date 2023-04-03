@@ -1,13 +1,37 @@
 import React from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
-// import custom styling.
 import './style.css';
 
-function Pokemon({ pokemon }) {
+// show more details of the pokemon when clicked.
+function PokemonDetails({ pokemon, onClose }) {
   return (
-    <div className='pokemonObject' key={pokemon.id}>
+    <div className="modal">
+      <div className="modal-content">
+        <h1>{pokemon.name.english}</h1>
+        <img
+          src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${pokemon.id
+            .toString()
+            .padStart(3, '0')}.png`}
+          alt={pokemon.name.english}
+        />
+        <ul>
+          {Object.entries(pokemon.base).map(([stat, value]) => (
+            <li key={stat}>
+              {stat}: {value}
+            </li>
+          ))}
+        </ul>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
+// Pokemon function takes in the pokemon object and the onClick function as props, defines how it is used.
+function Pokemon({ pokemon, onClick }) {
+  return (
+    <div className="pokemonObject" key={pokemon.id} onClick={onClick}>
       <h1>{pokemon.name.english}</h1>
       <img
         src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${pokemon.id
@@ -23,7 +47,7 @@ function Pokemon({ pokemon }) {
 function Result({ selectedTypes, searchName }) {
   const [pokemons, setPokemons] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // setting the max number of pokemons per page.
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
   const pokemonsPerPage = 15;
 
   useEffect(() => {
@@ -72,15 +96,28 @@ function Result({ selectedTypes, searchName }) {
     setCurrentPage(pageNumber);
   };
 
+  // handle the pokemon object click.
+  const handlePokemonClick = (pokemon) => {
+    setSelectedPokemon(pokemon);
+  };
+
+  // handle the close button on the pokemon details.
+  const handleCloseDetails = () => {
+    setSelectedPokemon(null);
+  };
+
   // return the page title, the pokemon objects in a grid, and the pagination buttons.
   // previous button is only displayed if the current page is greater than 1.
   // next button is only displayed if the current page is less than the total number of pages.
   return (
     <div>
+      {selectedPokemon && (
+        <PokemonDetails pokemon={selectedPokemon} onClose={handleCloseDetails} />
+      )}
       <h1 className="title">Page {currentPage}</h1>
       <div className="grid">
         {currentPokemons.map((pokemon) => (
-          <Pokemon key={pokemon.id} pokemon={pokemon} />
+          <Pokemon key={pokemon.id} pokemon={pokemon} onClick={() => handlePokemonClick(pokemon)} />
         ))}
       </div>
       <div className="pagination">

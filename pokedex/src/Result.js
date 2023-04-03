@@ -21,6 +21,9 @@ function PokemonDetails({ pokemon, onClose }) {
               {stat}: {value}
             </li>
           ))}
+          {pokemon.type.map((type) => (
+            <li key={type}>{type}</li>
+          ))}
         </ul>
         <button onClick={onClose}>Close</button>
       </div>

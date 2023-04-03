@@ -28,19 +28,19 @@ function Result({ selectedTypes }) {
           // if no types are selected, display all pokemon
           if (selectedTypes.length === 0) {
             return (
-              <div key={pokemon.id}>
-                {pokemon.name.english}
-                <br />
-              </div>
+              <div className='pokemonObject' key = {pokemon.id}>
+                <h1>{pokemon.name.english}</h1>
+                <img src = {`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${pokemon.id.toString().padStart(3, '0')}.png`} alt={pokemon.name.english} />
+                </div>
             )
 
             // if a type is selected, display only pokemon that match the type
           } else
             if (selectedTypes.every(type => pokemon.type.includes(type))) {
               return (
-                <div key={pokemon.id}>
-                  {pokemon.name.english}
-                  <br />
+                <div className='pokemonObject' key = {pokemon.id}>
+                <h1>{pokemon.name.english}</h1>
+                <img src = {`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${pokemon.id.toString().padStart(3, '0')}.png`} alt={pokemon.name.english} />
                 </div>
               )
             }

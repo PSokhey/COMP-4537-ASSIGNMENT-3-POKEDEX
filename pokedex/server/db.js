@@ -5,11 +5,7 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
     // Try to connect to MongoDB, else throw an error
   try {
-    await mongoose.connect("mongodb://localhost:27017/pokedex", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true
-    });
+    await mongoose.connect('mongodb+srv://user:aadyIKr3pF3lmefJ@cluster0.sl0wkjp.mongodb.net/?retryWrites=true&w=majority', {useNewUrlParser: true});
     console.log("MongoDB connected");
   } catch (error) {
     console.error("MongoDB connection failed", error);

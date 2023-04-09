@@ -57,7 +57,8 @@ function Result({ selectedTypes, searchName }) {
   const [pokemons, setPokemons] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const pokemonsPerPage = 15;
+  const [pokemonsPerPage, setPokemonsPerPage] = useState(15);
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -68,6 +69,7 @@ function Result({ selectedTypes, searchName }) {
     }
     fetchData();
   }, []);
+  
 
   // filter the pokemons based on the selected types and the search name.
   const filteredPokemons = pokemons.filter((pokemon) => {
@@ -89,6 +91,13 @@ function Result({ selectedTypes, searchName }) {
 
   // calculate the total number of pages needed.
   const totalPages = Math.ceil(filteredPokemons.length / pokemonsPerPage);
+
+  // if the current page is greater than the total number of pages, set the current page to the last page.
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(Math.max(1, totalPages));
+    }
+  }, [totalPages, currentPage]);
 
   // handle the next button.
   const handleNextPage = () => {
@@ -115,6 +124,15 @@ function Result({ selectedTypes, searchName }) {
     setSelectedPokemon(null);
   };
 
+  // handle the pokemons per page change.
+  const handlePokemonsPerPageChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (value >= 1) {
+      setPokemonsPerPage(value);
+      setCurrentPage((prevPage) => Math.min(prevPage, Math.ceil(filteredPokemons.length / value)));
+    }
+  };
+
   // return the page title, the pokemon objects in a grid, and the pagination buttons.
   // previous button is only displayed if the current page is greater than 1.
   // next button is only displayed if the current page is less than the total number of pages.
@@ -124,11 +142,6 @@ function Result({ selectedTypes, searchName }) {
         <PokemonDetails pokemon={selectedPokemon} onClose={handleCloseDetails} />
       )}
       <h1 className="title">Page {currentPage}</h1>
-      <div className="grid">
-        {currentPokemons.map((pokemon) => (
-          <Pokemon key={pokemon.id} pokemon={pokemon} onClick={() => handlePokemonClick(pokemon)} />
-        ))}
-      </div>
       <div className="pagination">
         {currentPage > 1 && (
           <button onClick={handlePrevPage}>&laquo; Previous</button>
@@ -147,6 +160,21 @@ function Result({ selectedTypes, searchName }) {
         {currentPage < totalPages && (
           <button onClick={handleNextPage}>Next &raquo;</button>
         )}
+      </div>
+      <div>
+        <label htmlFor="pokemonsPerPage">Pokémon per page:</label>
+        <input
+          type="number"
+          id="pokemonsPerPage"
+          value={pokemonsPerPage}
+          onChange={handlePokemonsPerPageChange}
+          min="1"
+        />
+      </div>
+      <div className="grid">
+        {currentPokemons.map((pokemon) => (
+          <Pokemon key={pokemon.id} pokemon={pokemon} onClick={() => handlePokemonClick(pokemon)} />
+        ))}
       </div>
     </div>
   );

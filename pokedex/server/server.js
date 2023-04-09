@@ -3,7 +3,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const User = require('../models/User');
 const connectDB = require('./db');
+const jwt = require('jsonwebtoken'); // Add this import
 const app = express();
+
+// Add secret keys for JWT
+const ACCESS_SECRET_KEY = 'access_secret_key_here';
+const REFRESH_SECRET_KEY = 'refresh_secret_key_here';
 
 // because REACT is on 3000, node is on 5000
 const PORT = process.env.PORT || 5000;
@@ -35,7 +40,13 @@ app.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ username, password });
     if (user) {
-      res.status(200).send(user);
+      const accessToken = jwt.sign({ userId: user._id, role: user.role }, ACCESS_SECRET_KEY, {
+        expiresIn: '1h',
+      });
+      const refreshToken = jwt.sign({ userId: user._id, role: user.role }, REFRESH_SECRET_KEY, {
+        expiresIn: '7d',
+      });
+      res.status(200).send({ user, accessToken, refreshToken });
     } else {
       res.status(401).send('Incorrect username/password');
     }
@@ -44,6 +55,25 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Middleware to verify the access token
+// later for admin routes
+const authenticate = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, ACCESS_SECRET_KEY, (err, user) => { // Use ACCESS_SECRET_KEY
+      if (err) {
+        return res.sendStatus(403);
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+

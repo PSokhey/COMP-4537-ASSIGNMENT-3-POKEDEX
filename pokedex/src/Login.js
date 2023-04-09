@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import App from './App';
 import Dashboard from './Dashboard';
@@ -6,10 +6,18 @@ import Dashboard from './Dashboard';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
+  const [role, setRole] = useState('user'); // Add this line
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const storedAccessToken = localStorage.getItem('accessToken');
+    if (storedUser && storedAccessToken) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +25,10 @@ function Login() {
     try {
       if (isLogin) {
         const res = await axios.post('http://localhost:5000/login', { username, password });
-        setUser(res.data);
+        setUser(res.data.user);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        localStorage.setItem('accessToken', res.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
       } else {
         await axios.post('http://localhost:5000/signup', { username, password, role });
         setIsLogin(true);
@@ -28,13 +39,30 @@ function Login() {
     }
   };
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  };
+
   const toggleLoginSignup = () => {
     setIsLogin(!isLogin);
     setErrorMessage('');
   };
 
   if (user) {
-    return user.role === 'admin' ? <Dashboard /> : <App />;
+    return user.role === 'admin' ? (
+      <>
+        <Dashboard />
+        <button onClick={logout}>Logout</button>
+      </>
+    ) : (
+      <>
+        <App />
+        <button onClick={logout}>Logout</button>
+      </>
+    );
   }
 
   return (

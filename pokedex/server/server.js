@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const User = require('../models/User');
+const connectDB = require('./db');
 const app = express();
 
 // because REACT is on 3000, node is on 5000
@@ -13,10 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // connect to mongodb
-mongoose.connect('mongodb://localhost:27017/pokedex', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+connectDB();
 
 // routes
 

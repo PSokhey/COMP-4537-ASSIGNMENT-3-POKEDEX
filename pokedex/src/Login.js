@@ -24,13 +24,13 @@ function Login() {
     setErrorMessage('');
     try {
       if (isLogin) {
-        const res = await axios.post('http://localhost:5000/login', { username, password });
+        const res = await axios.post('https://prabh-sokhey-pokedex.onrender.com/login', { username, password });
         setUser(res.data.user);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('accessToken', res.data.accessToken);
         localStorage.setItem('refreshToken', res.data.refreshToken);
       } else {
-        await axios.post('http://localhost:5000/signup', { username, password, role });
+        await axios.post('https://prabh-sokhey-pokedex.onrender.com/signup', { username, password, role });
         setIsLogin(true);
       }
     } catch (err) {

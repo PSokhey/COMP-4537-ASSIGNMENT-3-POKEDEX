@@ -14,7 +14,7 @@ const REFRESH_SECRET_KEY = 'refresh_secret_key_here';
 const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://prabh-sokhey-pokedex.onrender.com'],
+  origin: ['http://localhost:3000', 'https://prabh-sokhey-pokedex.onrender.com', 'https://transcendent-puppy-5ce0f3.netlify.app'],
   optionsSuccessStatus: 200,
 };
 

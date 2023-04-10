@@ -5,6 +5,7 @@ const User = require('../models/User');
 const connectDB = require('./db');
 const jwt = require('jsonwebtoken'); // Add this import
 const app = express();
+const axios = require('axios');
 
 // Add secret keys for JWT
 const ACCESS_SECRET_KEY = 'access_secret_key_here';
@@ -82,6 +83,42 @@ const authenticate = (req, res, next) => {
     res.sendStatus(401);
   }
 };
+
+// GET Pokémon details by ID
+app.get('/pokemon/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await axios.get('https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/pokedex.json');
+    const pokemon = response.data.find(p => p.id === parseInt(id));
+    if (pokemon) {
+      res.status(200).send(pokemon);
+    } else {
+      res.status(404).send({ message: 'Pokémon not found' });
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// GET Pokémon image by ID
+app.get('/pokemon-image/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const paddedId = id.toString().padStart(3, '0');
+  const imageUrl = `https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${paddedId}.png`;
+
+  try {
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    if (response.status === 200) {
+      res.set('Content-Type', 'image/png');
+      res.status(200).send(Buffer.from(response.data, 'binary'));
+    } else {
+      res.status(response.status).send(response.statusText);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

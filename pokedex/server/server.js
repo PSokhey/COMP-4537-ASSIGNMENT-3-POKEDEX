@@ -120,6 +120,17 @@ app.get('/pokemon-image/:id', authenticate, async (req, res) => {
   }
 });
 
+// notify when pokemon is queried.
+app.get('/pokemon-rendered/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  try {
+    res.status(200); // replace 'pokemon' with the name of your view/template
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

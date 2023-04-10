@@ -212,7 +212,7 @@ app.get('/analytics/top-api-users', async (req, res) => {
 
 
 // top users for each endpoint.
-app.get('/analytics/top-users-per-endpoint', async (req, res) => {
+app.get('/analytics/top-users-by-endpoint', async (req, res) => {
   try {
     const topUsersPerEndpoint = await Event.aggregate([
       {

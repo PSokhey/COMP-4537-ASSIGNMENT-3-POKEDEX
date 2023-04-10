@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import './style.css';
 
-// show more details of the pokemon when clicked.
+async function sendAnalyticsEvent(eventType, pokemonId) {
+  try {
+    const token = localStorage.getItem('accessToken');
+    await axios.post(
+      `https://prabh-sokhey-pokedex.onrender.com/analytics/${eventType}`,
+      { pokemonId },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  } catch (error) {
+    console.error(`Failed to send analytics event: ${eventType}`);
+  }
+}
+
 function PokemonDetails({ pokemon, onClose }) {
+  const sentEvent = useRef(false);
+
+  useEffect(() => {
+    if (!sentEvent.current) {
+      sendAnalyticsEvent('pokemon-clicked', pokemon.id);
+      sentEvent.current = true;
+    }
+  }, [pokemon]);
+
   return (
     <>
     <div className="modal-background" onClick={onClose}></div>
@@ -37,8 +57,16 @@ function PokemonDetails({ pokemon, onClose }) {
   );
 }
 
-// Pokemon function takes in the pokemon object and the onClick function as props, defines how it is used.
 function Pokemon({ pokemon, onClick }) {
+  const sentEvent = useRef(false);
+
+  useEffect(() => {
+    if (!sentEvent.current) {
+      sendAnalyticsEvent('pokemon-image-generated', pokemon.id);
+      sentEvent.current = true;
+    }
+  }, [pokemon]);
+
   return (
     <div className="pokemonObject" key={pokemon.id} onClick={onClick}>
       <h1>{pokemon.name.english}</h1>

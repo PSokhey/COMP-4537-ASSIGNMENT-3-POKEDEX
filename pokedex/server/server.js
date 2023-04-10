@@ -211,6 +211,7 @@ app.get('/analytics/top-api-users', async (req, res) => {
 });
 
 
+
 // top users for each endpoint.
 app.get('/analytics/top-users-by-endpoint', async (req, res) => {
   try {
@@ -256,6 +257,7 @@ app.get('/analytics/top-users-by-endpoint', async (req, res) => {
     res.status(500).send('Error fetching top users per endpoint');
   }
 });
+
 
 // getting errors by endpoint.
 app.get('/analytics/errors-by-endpoint', async (req, res) => {

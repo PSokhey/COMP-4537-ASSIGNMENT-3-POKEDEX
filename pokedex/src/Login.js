@@ -6,7 +6,7 @@ import Dashboard from './Dashboard';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // Add this line
+  const [role, setRole] = useState('user');
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');

@@ -14,7 +14,17 @@ const REFRESH_SECRET_KEY = 'refresh_secret_key_here';
 const PORT = process.env.PORT || 5000;
 
 // middleware
-app.use(cors());
+
+
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://prabh-sokhey-pokedex.onrender.com'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
+
+
 app.use(bodyParser.json());
 
 // connect to mongodb
